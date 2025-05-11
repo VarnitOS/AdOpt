@@ -1,9 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --gradient-primary: linear-gradient(120deg, #2563eb, #6366f1);
+  --gradient-secondary: linear-gradient(120deg, #7e22ce, #d946ef);
+  --gradient-success: linear-gradient(120deg, #10b981, #34d399);
+  --gradient-warning: linear-gradient(120deg, #f59e0b, #fbbf24);
+  --gradient-danger: linear-gradient(120deg, #ef4444, #f87171);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --card-border-radius: 12px;
+  --anim-duration: 0.3s;
+}
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  scroll-behavior: smooth;
 }
 
 * {
@@ -13,18 +29,47 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+  transition: color var(--anim-duration) ease;
+}
+
+a:hover {
+  color: #2563eb;
 }
 
 .pageContainer {
-  padding: 2rem;
-  max-width: 1400px;
+  padding: 1.5rem 2rem;
+  max-width: 1440px;
   margin: 0 auto;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .dashboard-card {
   height: 100%;
   display: flex;
   flex-direction: column;
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+  position: relative;
+  transition: transform var(--anim-duration) ease-in-out;
+}
+
+.dashboard-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--gradient-primary);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
 }
 
 .dashboard-card-content {
@@ -36,32 +81,112 @@ a {
   position: relative;
   height: 300px;
   width: 100%;
+  padding: 16px 0;
 }
 
 .bidding-simulator {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 .bidding-controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 20px;
+  margin-top: 10px;
 }
 
 .metric-card {
   text-align: center;
-  padding: 16px;
+  padding: 24px 16px;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  transition: all var(--anim-duration) ease;
+  border-left: 4px solid transparent;
+}
+
+.metric-card:hover {
+  background-color: #f3f4f6;
+  border-left: 4px solid #2563eb;
+  transform: translateX(4px);
 }
 
 .metric-value {
-  font-size: 2rem;
-  font-weight: 500;
-  color: #1976d2;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 4px;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .metric-label {
   font-size: 0.875rem;
-  color: #666;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.campaign-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.card-title-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.page-header {
+  margin-bottom: 32px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-radius: 2px;
+}
+
+.MuiDataGrid-root {
+  border: none !important;
+  border-radius: var(--card-border-radius);
+  background-color: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.MuiDataGrid-cell {
+  border-bottom: 1px solid #f3f4f6 !important;
+}
+
+.status-chip {
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.status-active {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #059669;
+}
+
+.status-paused {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.status-ended {
+  background-color: rgba(107, 114, 128, 0.1);
+  color: #4b5563;
 } 
