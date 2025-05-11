@@ -1,30 +1,48 @@
 #!/bin/bash
 
-# Start the backend server
-echo "Starting the backend server..."
-cd backend && mvn spring-boot:run &
-BACKEND_PID=$!
+# Set colors for better visual output
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
 
-# Wait for the backend to start
-echo "Waiting for backend to start..."
-sleep 10
+echo -e "${GREEN}=== AdOpt Development Environment ===${NC}"
+echo -e "${YELLOW}Starting services...${NC}"
 
-# Start the frontend development server
-echo "Starting the frontend development server..."
-cd ../frontend && npm run dev &
-FRONTEND_PID=$!
+# Check if Docker is running
+if ! docker info > /dev/null 2>&1; then
+  echo -e "${YELLOW}Docker is not running. Starting Docker...${NC}"
+  open -a Docker
+  
+  # Wait for Docker to start
+  echo -e "${YELLOW}Waiting for Docker to start...${NC}"
+  until docker info > /dev/null 2>&1; do
+    sleep 1
+  done
+fi
 
-# Handle shutdown gracefully
-function cleanup {
-  echo "Shutting down servers..."
-  kill $FRONTEND_PID
-  kill $BACKEND_PID
-  exit 0
-}
+# Check if docker-compose exists 
+if command -v docker-compose &> /dev/null; then
+  DOCKER_COMPOSE="docker-compose"
+elif command -v docker compose &> /dev/null; then
+  DOCKER_COMPOSE="docker compose"
+else
+  echo -e "${YELLOW}Docker Compose not found. Using 'docker-compose'...${NC}"
+  DOCKER_COMPOSE="docker-compose"
+fi
 
-# Register the cleanup function for SIGINT and SIGTERM
-trap cleanup SIGINT SIGTERM
+# Build and start containers
+echo -e "${YELLOW}Building containers...${NC}"
+$DOCKER_COMPOSE build
 
-# Keep the script running
-echo "Servers are running. Press Ctrl+C to stop."
-wait $BACKEND_PID $FRONTEND_PID 
+echo -e "${YELLOW}Starting containers...${NC}"
+$DOCKER_COMPOSE up -d
+
+echo -e "${GREEN}Services started!${NC}"
+echo -e "${GREEN}Frontend: http://localhost:3000${NC}"
+echo -e "${GREEN}Backend: http://localhost:8080${NC}"
+echo -e "${GREEN}Database: localhost:5432${NC}"
+echo ""
+echo -e "${YELLOW}Displaying logs, press Ctrl+C to stop viewing logs (services will continue running)${NC}"
+
+# Show logs
+$DOCKER_COMPOSE logs -f 

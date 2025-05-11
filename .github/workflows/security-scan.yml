@@ -1,0 +1,79 @@
+name: Security Scan
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Frontend dependency scan
+      - name: Run npm audit
+        working-directory: ./frontend
+        run: npm audit --production || true
+
+      # OWASP dependency check for Java
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          project: 'AdOpt'
+          path: 'backend'
+          format: 'HTML'
+          args: >
+            --failOnCVSS 9
+            --enableRetired
+
+      # Upload the report
+      - name: Upload dependency check report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-check-report
+          path: ${{github.workspace}}/reports
+          retention-days: 7
+
+      # Run SonarCloud scan
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          args: >
+            -Dsonar.projectKey=VarnitOS_AdOpt
+            -Dsonar.organization=varnitos
+            -Dsonar.sources=frontend/src,backend/src/main
+            -Dsonar.tests=backend/src/test
+            -Dsonar.java.binaries=backend/target/classes
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
+
+      # Snyk scan for vulnerabilities  
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high 
