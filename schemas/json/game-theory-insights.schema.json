@@ -1,0 +1,438 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GameTheoryInsights",
+  "description": "Game theory insights for advertising bid optimization",
+  "type": "object",
+  "required": ["campaignId", "timestamp", "insights"],
+  "properties": {
+    "campaignId": {
+      "type": "integer",
+      "description": "ID of the campaign these insights apply to"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "Timestamp when these insights were generated",
+      "format": "date-time"
+    },
+    "insights": {
+      "type": "object",
+      "description": "Game theory insights",
+      "required": ["marketAnalysis", "competitorStrategies", "equilibriumAnalysis", "recommendations"],
+      "properties": {
+        "marketAnalysis": {
+          "type": "object",
+          "description": "Analysis of the current market conditions",
+          "properties": {
+            "marketType": {
+              "type": "string",
+              "description": "Type of market according to game theory",
+              "enum": ["PERFECT_COMPETITION", "MONOPOLISTIC_COMPETITION", "OLIGOPOLY", "MONOPOLY"]
+            },
+            "marketConcentration": {
+              "type": "number",
+              "description": "Market concentration (Herfindahl-Hirschman Index)",
+              "minimum": 0,
+              "maximum": 10000
+            },
+            "keyPlayers": {
+              "type": "array",
+              "description": "Key players in the market",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "ID of the competitor"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the competitor"
+                  },
+                  "marketShare": {
+                    "type": "number",
+                    "description": "Market share percentage",
+                    "minimum": 0,
+                    "maximum": 100
+                  },
+                  "bidingPower": {
+                    "type": "number",
+                    "description": "Relative bidding power in the market",
+                    "minimum": 0,
+                    "maximum": 10
+                  }
+                }
+              }
+            },
+            "segmentAnalysis": {
+              "type": "array",
+              "description": "Analysis of different market segments",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "segment": {
+                    "type": "string",
+                    "description": "Market segment name"
+                  },
+                  "competitionLevel": {
+                    "type": "string",
+                    "description": "Level of competition in this segment",
+                    "enum": ["LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+                  },
+                  "averageBidCPM": {
+                    "type": "number",
+                    "description": "Average bid price in CPM for this segment",
+                    "minimum": 0
+                  },
+                  "userSensitivity": {
+                    "type": "number",
+                    "description": "User sensitivity to price changes",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        "competitorStrategies": {
+          "type": "array",
+          "description": "Analysis of competitor strategies",
+          "items": {
+            "type": "object",
+            "properties": {
+              "competitorId": {
+                "type": "string",
+                "description": "ID of the competitor"
+              },
+              "observedStrategy": {
+                "type": "string",
+                "description": "Observed bidding strategy of the competitor",
+                "enum": ["AGGRESSIVE", "DEFENSIVE", "SELECTIVE", "OPPORTUNISTIC", "CONSISTENT", "ERRATIC"]
+              },
+              "bidPattern": {
+                "type": "object",
+                "description": "Observed bidding pattern",
+                "properties": {
+                  "averageBid": {
+                    "type": "number",
+                    "description": "Average bid amount",
+                    "minimum": 0
+                  },
+                  "bidVariability": {
+                    "type": "number",
+                    "description": "Variability in bid amounts",
+                    "minimum": 0
+                  },
+                  "timePattern": {
+                    "type": "string",
+                    "description": "Time pattern of bids",
+                    "enum": ["CONSISTENT", "TIME_OF_DAY", "DAY_OF_WEEK", "SEASONAL", "RANDOM"]
+                  },
+                  "targetSegments": {
+                    "type": "array",
+                    "description": "Segments the competitor targets most",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "responseToOurBids": {
+                    "type": "string",
+                    "description": "How the competitor responds to our bidding activity",
+                    "enum": ["IGNORES", "MATCHES", "OUTBIDS", "UNDERCUTS", "WITHDRAWS", "VARIES"]
+                  }
+                }
+              },
+              "valuationModel": {
+                "type": "object",
+                "description": "Estimated valuation model of the competitor",
+                "properties": {
+                  "valuePerImpression": {
+                    "type": "number",
+                    "description": "Estimated value per impression",
+                    "minimum": 0
+                  },
+                  "valuePerClick": {
+                    "type": "number",
+                    "description": "Estimated value per click",
+                    "minimum": 0
+                  },
+                  "valuePerConversion": {
+                    "type": "number",
+                    "description": "Estimated value per conversion",
+                    "minimum": 0
+                  },
+                  "budgetConstraints": {
+                    "type": "boolean",
+                    "description": "Whether the competitor appears to have budget constraints"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "equilibriumAnalysis": {
+          "type": "object",
+          "description": "Analysis of equilibrium states in the market",
+          "properties": {
+            "nashEquilibrium": {
+              "type": "object",
+              "description": "Nash equilibrium analysis",
+              "properties": {
+                "equilibriumExists": {
+                  "type": "boolean",
+                  "description": "Whether a Nash equilibrium exists"
+                },
+                "equilibriumBids": {
+                  "type": "object",
+                  "description": "Equilibrium bid values for each player",
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "stability": {
+                  "type": "number",
+                  "description": "Stability of the equilibrium",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            },
+            "stackelbergEquilibrium": {
+              "type": "object",
+              "description": "Stackelberg equilibrium analysis (for sequential bidding)",
+              "properties": {
+                "leaderAdvantage": {
+                  "type": "number",
+                  "description": "Advantage to the first mover",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "optimalLeaderBid": {
+                  "type": "number",
+                  "description": "Optimal bid if acting as a leader",
+                  "minimum": 0
+                },
+                "optimalFollowerBid": {
+                  "type": "number",
+                  "description": "Optimal bid if acting as a follower",
+                  "minimum": 0
+                }
+              }
+            },
+            "paretoFrontier": {
+              "type": "array",
+              "description": "Pareto-optimal bid combinations",
+              "items": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "number",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        },
+        "recommendations": {
+          "type": "object",
+          "description": "Strategic recommendations based on game theory analysis",
+          "properties": {
+            "optimalStrategy": {
+              "type": "string",
+              "description": "Recommended optimal strategy",
+              "enum": ["AGGRESSIVE", "DEFENSIVE", "SELECTIVE", "OPPORTUNISTIC", "COOPERATIVE", "MIXED"]
+            },
+            "optimalBidRange": {
+              "type": "object",
+              "description": "Recommended bid range",
+              "properties": {
+                "min": {
+                  "type": "number",
+                  "description": "Minimum recommended bid",
+                  "minimum": 0
+                },
+                "max": {
+                  "type": "number",
+                  "description": "Maximum recommended bid",
+                  "minimum": 0
+                },
+                "optimal": {
+                  "type": "number",
+                  "description": "Optimal recommended bid",
+                  "minimum": 0
+                }
+              }
+            },
+            "targetSegments": {
+              "type": "array",
+              "description": "Segments to target based on game theory analysis",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "segment": {
+                    "type": "string",
+                    "description": "Segment identifier"
+                  },
+                  "bidModifier": {
+                    "type": "number",
+                    "description": "Recommended bid modifier for this segment",
+                    "minimum": 0
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "description": "Rationale for this recommendation"
+                  }
+                }
+              }
+            },
+            "competitorSpecificTactics": {
+              "type": "array",
+              "description": "Tactics to use against specific competitors",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "competitorId": {
+                    "type": "string",
+                    "description": "ID of the competitor"
+                  },
+                  "tactic": {
+                    "type": "string",
+                    "description": "Recommended tactic against this competitor",
+                    "enum": ["OUTBID", "UNDERBID", "AVOID", "MATCH", "IGNORE"]
+                  },
+                  "bidAdjustment": {
+                    "type": "number",
+                    "description": "Recommended bid adjustment factor",
+                    "minimum": 0
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "description": "Rationale for this recommendation"
+                  }
+                }
+              }
+            },
+            "projectedOutcomes": {
+              "type": "object",
+              "description": "Projected outcomes of following recommendations",
+              "properties": {
+                "marketShare": {
+                  "type": "number",
+                  "description": "Projected market share",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "roi": {
+                  "type": "number",
+                  "description": "Projected ROI"
+                },
+                "costSavings": {
+                  "type": "number",
+                  "description": "Projected cost savings",
+                  "minimum": 0
+                },
+                "competitorResponses": {
+                  "type": "array",
+                  "description": "Projected competitor responses",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "competitorId": {
+                        "type": "string",
+                        "description": "ID of the competitor"
+                      },
+                      "likelyResponse": {
+                        "type": "string",
+                        "description": "Likely response of the competitor",
+                        "enum": ["MATCH", "WITHDRAW", "ESCALATE", "IGNORE", "DIVERSIFY"]
+                      },
+                      "confidenceLevel": {
+                        "type": "number",
+                        "description": "Confidence in this prediction",
+                        "minimum": 0,
+                        "maximum": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "confidenceScores": {
+      "type": "object",
+      "description": "Confidence scores for different aspects of the insights",
+      "properties": {
+        "overall": {
+          "type": "number",
+          "description": "Overall confidence score",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "marketAnalysis": {
+          "type": "number",
+          "description": "Confidence in market analysis",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "competitorStrategies": {
+          "type": "number",
+          "description": "Confidence in competitor strategy analysis",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "equilibriumAnalysis": {
+          "type": "number",
+          "description": "Confidence in equilibrium analysis",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "recommendations": {
+          "type": "number",
+          "description": "Confidence in recommendations",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "dataPoints": {
+      "type": "object",
+      "description": "Information about the data points used to generate these insights",
+      "properties": {
+        "biddingEvents": {
+          "type": "integer",
+          "description": "Number of bidding events analyzed",
+          "minimum": 0
+        },
+        "competitorActions": {
+          "type": "integer",
+          "description": "Number of competitor actions analyzed",
+          "minimum": 0
+        },
+        "marketTrends": {
+          "type": "integer",
+          "description": "Number of market trends analyzed",
+          "minimum": 0
+        },
+        "timeRange": {
+          "type": "object",
+          "description": "Time range of data used",
+          "properties": {
+            "start": {
+              "type": "string",
+              "description": "Start of the time range",
+              "format": "date-time"
+            },
+            "end": {
+              "type": "string",
+              "description": "End of the time range",
+              "format": "date-time"
+            }
+          }
+        }
+      }
+    }
+  }
+} 

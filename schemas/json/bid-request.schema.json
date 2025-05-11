@@ -1,0 +1,422 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BidRequest",
+  "description": "A request for a bid in a real-time bidding auction",
+  "type": "object",
+  "required": ["id", "timestamp", "imp", "device", "user", "app", "site"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for this bid request"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "Timestamp when the bid request was created",
+      "format": "date-time"
+    },
+    "tmax": {
+      "type": "integer",
+      "description": "Maximum time in milliseconds to submit a bid",
+      "minimum": 0
+    },
+    "imp": {
+      "type": "array",
+      "description": "Array of impression objects representing available impression opportunities",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "bidfloor", "bidfloorcur"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this impression opportunity"
+          },
+          "banner": {
+            "type": "object",
+            "description": "Details for banner impression opportunities",
+            "properties": {
+              "w": {
+                "type": "integer",
+                "description": "Width of the impression in pixels",
+                "minimum": 1
+              },
+              "h": {
+                "type": "integer",
+                "description": "Height of the impression in pixels",
+                "minimum": 1
+              },
+              "mimes": {
+                "type": "array",
+                "description": "Content MIME types supported",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "pos": {
+                "type": "integer",
+                "description": "Ad position",
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7]
+              }
+            }
+          },
+          "video": {
+            "type": "object",
+            "description": "Details for video impression opportunities",
+            "properties": {
+              "mimes": {
+                "type": "array",
+                "description": "Content MIME types supported",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "minduration": {
+                "type": "integer",
+                "description": "Minimum video duration in seconds",
+                "minimum": 0
+              },
+              "maxduration": {
+                "type": "integer",
+                "description": "Maximum video duration in seconds",
+                "minimum": 0
+              },
+              "protocols": {
+                "type": "array",
+                "description": "Supported video protocols",
+                "items": {
+                  "type": "integer",
+                  "enum": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                }
+              },
+              "w": {
+                "type": "integer",
+                "description": "Width of the video player in pixels",
+                "minimum": 1
+              },
+              "h": {
+                "type": "integer",
+                "description": "Height of the video player in pixels",
+                "minimum": 1
+              }
+            }
+          },
+          "native": {
+            "type": "object",
+            "description": "Details for native impression opportunities",
+            "properties": {
+              "request": {
+                "type": "string",
+                "description": "Native ad specification as an OpenRTB Native request string"
+              }
+            }
+          },
+          "bidfloor": {
+            "type": "number",
+            "description": "Minimum bid for this impression in CPM",
+            "minimum": 0
+          },
+          "bidfloorcur": {
+            "type": "string",
+            "description": "Currency of the bidfloor (ISO-4217)",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "secure": {
+            "type": "integer",
+            "description": "Flag to indicate if the impression requires HTTPS URL creative assets",
+            "enum": [0, 1]
+          }
+        }
+      }
+    },
+    "app": {
+      "type": "object",
+      "description": "Details about the app where the impression will be shown (required if site not provided)",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Application ID in the exchange"
+        },
+        "name": {
+          "type": "string",
+          "description": "Application name"
+        },
+        "bundle": {
+          "type": "string",
+          "description": "Application bundle or package name"
+        },
+        "domain": {
+          "type": "string",
+          "description": "Domain of the app"
+        },
+        "storeurl": {
+          "type": "string",
+          "description": "App store URL for the app",
+          "format": "uri"
+        },
+        "cat": {
+          "type": "array",
+          "description": "Array of IAB content categories for the app",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ver": {
+          "type": "string",
+          "description": "Application version"
+        },
+        "paid": {
+          "type": "integer",
+          "description": "Flag to indicate if this is a paid version of the app",
+          "enum": [0, 1]
+        }
+      }
+    },
+    "site": {
+      "type": "object",
+      "description": "Details about the website where the impression will be shown (required if app not provided)",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Site ID in the exchange"
+        },
+        "name": {
+          "type": "string",
+          "description": "Site name"
+        },
+        "domain": {
+          "type": "string",
+          "description": "Domain of the site"
+        },
+        "page": {
+          "type": "string",
+          "description": "URL of the page where the impression will be shown",
+          "format": "uri"
+        },
+        "cat": {
+          "type": "array",
+          "description": "Array of IAB content categories for the site",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ref": {
+          "type": "string",
+          "description": "Referrer URL that caused navigation to the current page",
+          "format": "uri"
+        },
+        "publisher": {
+          "type": "object",
+          "description": "Details about the publisher of the site",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Publisher ID in the exchange"
+            },
+            "name": {
+              "type": "string",
+              "description": "Publisher name"
+            },
+            "domain": {
+              "type": "string",
+              "description": "Publisher domain"
+            }
+          }
+        }
+      }
+    },
+    "device": {
+      "type": "object",
+      "description": "Details about the user's device",
+      "properties": {
+        "ua": {
+          "type": "string",
+          "description": "User agent string"
+        },
+        "geo": {
+          "type": "object",
+          "description": "Geolocation information",
+          "properties": {
+            "lat": {
+              "type": "number",
+              "description": "Latitude from -90.0 to +90.0"
+            },
+            "lon": {
+              "type": "number",
+              "description": "Longitude from -180.0 to +180.0"
+            },
+            "country": {
+              "type": "string",
+              "description": "Country code (ISO-3166-1 Alpha-3)",
+              "pattern": "^[A-Z]{3}$"
+            },
+            "region": {
+              "type": "string",
+              "description": "Region code (ISO-3166-2)"
+            },
+            "city": {
+              "type": "string",
+              "description": "City name"
+            },
+            "zip": {
+              "type": "string",
+              "description": "Zip or postal code"
+            }
+          }
+        },
+        "ip": {
+          "type": "string",
+          "description": "IPv4 or IPv6 address"
+        },
+        "devicetype": {
+          "type": "integer",
+          "description": "Device type",
+          "enum": [1, 2, 3, 4, 5, 6, 7]
+        },
+        "make": {
+          "type": "string",
+          "description": "Device make or manufacturer"
+        },
+        "model": {
+          "type": "string",
+          "description": "Device model"
+        },
+        "os": {
+          "type": "string",
+          "description": "Device operating system"
+        },
+        "osv": {
+          "type": "string",
+          "description": "Device operating system version"
+        },
+        "language": {
+          "type": "string",
+          "description": "Browser language (ISO-639-1-alpha-2)",
+          "pattern": "^[a-z]{2}$"
+        },
+        "carrier": {
+          "type": "string",
+          "description": "Carrier or ISP"
+        },
+        "connectiontype": {
+          "type": "integer",
+          "description": "Network connection type",
+          "enum": [0, 1, 2, 3, 4, 5, 6, 7]
+        }
+      }
+    },
+    "user": {
+      "type": "object",
+      "description": "Details about the user",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "User ID"
+        },
+        "buyeruid": {
+          "type": "string",
+          "description": "Buyer-specific ID for the user"
+        },
+        "yob": {
+          "type": "integer",
+          "description": "Year of birth as a 4-digit integer",
+          "minimum": 1900,
+          "maximum": 2100
+        },
+        "gender": {
+          "type": "string",
+          "description": "Gender ('M' = male, 'F' = female, 'O' = other)",
+          "enum": ["M", "F", "O"]
+        },
+        "keywords": {
+          "type": "string",
+          "description": "Comma-separated list of keywords, interests, or intent"
+        },
+        "customdata": {
+          "type": "string",
+          "description": "Optional feature to pass custom data to the bidder"
+        }
+      }
+    },
+    "regs": {
+      "type": "object",
+      "description": "Regulatory constraints",
+      "properties": {
+        "coppa": {
+          "type": "integer",
+          "description": "Flag indicating if this request is subject to COPPA regulations",
+          "enum": [0, 1]
+        },
+        "gdpr": {
+          "type": "integer",
+          "description": "Flag indicating if this request is subject to GDPR regulations",
+          "enum": [0, 1]
+        },
+        "ccpa": {
+          "type": "integer",
+          "description": "Flag indicating if this request is subject to CCPA regulations",
+          "enum": [0, 1]
+        }
+      }
+    },
+    "ext": {
+      "type": "object",
+      "description": "Custom extension for this bid request",
+      "properties": {
+        "gameTheoryData": {
+          "type": "object",
+          "description": "AdOpt-specific game theory data",
+          "properties": {
+            "competitorInsights": {
+              "type": "object",
+              "description": "Insights about competitor bidding patterns",
+              "properties": {
+                "averageBids": {
+                  "type": "object",
+                  "description": "Average bids by competitor ID",
+                  "additionalProperties": {
+                    "type": "number"
+                  }
+                },
+                "winRates": {
+                  "type": "object",
+                  "description": "Win rates by competitor ID",
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                },
+                "predictedBidRanges": {
+                  "type": "object",
+                  "description": "Predicted bid ranges by competitor ID",
+                  "additionalProperties": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  }
+                }
+              }
+            },
+            "projectedUserValue": {
+              "type": "number",
+              "description": "Projected value of this user for the advertiser",
+              "minimum": 0
+            },
+            "recommendedBidRange": {
+              "type": "array",
+              "description": "Recommended bid range based on game theory calculations",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            }
+          }
+        }
+      }
+    }
+  }
+} 

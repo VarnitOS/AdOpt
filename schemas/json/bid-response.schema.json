@@ -1,0 +1,215 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "BidResponse",
+  "description": "A response to a bid request in a real-time bidding auction",
+  "type": "object",
+  "required": ["id", "bidid", "seatbid", "cur"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "ID of the bid request to which this is a response"
+    },
+    "bidid": {
+      "type": "string",
+      "description": "Bidder's internal ID for this bid"
+    },
+    "cur": {
+      "type": "string",
+      "description": "ISO-4217 currency code of the bid",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "seatbid": {
+      "type": "array",
+      "description": "Array of seat bid objects, each related to a different bidder seat",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["bid"],
+        "properties": {
+          "bid": {
+            "type": "array",
+            "description": "Array of bid objects, each representing a unique bid",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["id", "impid", "price", "adid", "adm", "crid"],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "Bidder's bid ID"
+                },
+                "impid": {
+                  "type": "string",
+                  "description": "ID of the impression being bid on"
+                },
+                "price": {
+                  "type": "number",
+                  "description": "Bid price in CPM",
+                  "minimum": 0
+                },
+                "adid": {
+                  "type": "string",
+                  "description": "ID of the ad creative to be served if the bid wins"
+                },
+                "adm": {
+                  "type": "string",
+                  "description": "The actual ad markup"
+                },
+                "adomain": {
+                  "type": "array",
+                  "description": "Advertiser domain",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "iurl": {
+                  "type": "string",
+                  "description": "URL of the creative image for preview",
+                  "format": "uri"
+                },
+                "cid": {
+                  "type": "string",
+                  "description": "Campaign ID"
+                },
+                "crid": {
+                  "type": "string",
+                  "description": "Creative ID"
+                },
+                "attr": {
+                  "type": "array",
+                  "description": "Creative attributes as defined by the exchange",
+                  "items": {
+                    "type": "integer"
+                  }
+                },
+                "dealid": {
+                  "type": "string",
+                  "description": "Reference to a deal from the bid request if applicable"
+                },
+                "w": {
+                  "type": "integer",
+                  "description": "Width of the creative in pixels",
+                  "minimum": 1
+                },
+                "h": {
+                  "type": "integer",
+                  "description": "Height of the creative in pixels",
+                  "minimum": 1
+                },
+                "cat": {
+                  "type": "array",
+                  "description": "IAB content categories of the creative",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "language": {
+                  "type": "string",
+                  "description": "Language of the creative (ISO-639-1)",
+                  "pattern": "^[a-z]{2}$"
+                },
+                "exp": {
+                  "type": "integer",
+                  "description": "Advisory as to the number of seconds the bidder is willing to wait between auction and impression",
+                  "minimum": 0
+                }
+              }
+            }
+          },
+          "seat": {
+            "type": "string",
+            "description": "ID of the bidder seat on whose behalf this bid is made"
+          },
+          "group": {
+            "type": "integer",
+            "description": "Flag to indicate if the bid is part of a group",
+            "enum": [0, 1]
+          }
+        }
+      }
+    },
+    "bidtime": {
+      "type": "string",
+      "description": "Timestamp when the bid response was generated",
+      "format": "date-time"
+    },
+    "nbr": {
+      "type": "integer",
+      "description": "Reason for not bidding (0 = bid, >0 = no bid)",
+      "minimum": 0
+    },
+    "ext": {
+      "type": "object",
+      "description": "Custom extension for the bid response",
+      "properties": {
+        "gameTheoryDetails": {
+          "type": "object",
+          "description": "AdOpt-specific game theory details for the bid",
+          "properties": {
+            "strategy": {
+              "type": "string",
+              "description": "Game theory strategy used for this bid",
+              "enum": ["NASH_EQUILIBRIUM", "STACKELBERG", "BAYESIAN", "PARETO_OPTIMAL"]
+            },
+            "optimizationGoal": {
+              "type": "string",
+              "description": "Optimization goal for this bid",
+              "enum": ["ROI", "REVENUE", "PROFIT", "MARKET_SHARE", "USER_ACQUISITION"]
+            },
+            "confidenceScore": {
+              "type": "number",
+              "description": "Confidence score for this bid calculation",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "competitiveAnalysis": {
+              "type": "object",
+              "description": "Details about the competitive landscape for this auction",
+              "properties": {
+                "predictedCompetitors": {
+                  "type": "array",
+                  "description": "List of predicted competitors in this auction",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "marketPosition": {
+                  "type": "string",
+                  "description": "Current market position in this segment",
+                  "enum": ["LEADER", "CHALLENGER", "FOLLOWER", "NICHE"]
+                },
+                "bidAggressiveness": {
+                  "type": "number",
+                  "description": "Aggressiveness of the bid compared to historical bids",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            },
+            "expectedOutcome": {
+              "type": "object",
+              "description": "Expected outcome if bid wins",
+              "properties": {
+                "winProbability": {
+                  "type": "number",
+                  "description": "Probability of winning with this bid",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "expectedROI": {
+                  "type": "number",
+                  "description": "Expected return on investment if the bid wins"
+                },
+                "expectedValue": {
+                  "type": "number",
+                  "description": "Expected value of this impression",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+} 

@@ -1,0 +1,418 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CompetitorAnalysis",
+  "description": "Analysis of competitors in the advertising marketplace",
+  "type": "object",
+  "required": ["campaignId", "timestamp", "competitors", "marketSummary"],
+  "properties": {
+    "campaignId": {
+      "type": "integer",
+      "description": "ID of the campaign this analysis applies to"
+    },
+    "timestamp": {
+      "type": "string",
+      "description": "Timestamp when this analysis was generated",
+      "format": "date-time"
+    },
+    "marketSummary": {
+      "type": "object",
+      "description": "Summary of the market competitive landscape",
+      "properties": {
+        "totalCompetitors": {
+          "type": "integer",
+          "description": "Total number of identified competitors",
+          "minimum": 0
+        },
+        "activeCompetitors": {
+          "type": "integer",
+          "description": "Number of currently active competitors",
+          "minimum": 0
+        },
+        "competitivePressure": {
+          "type": "number",
+          "description": "Index of competitive pressure (0-10)",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "marketConcentration": {
+          "type": "string",
+          "description": "Level of market concentration",
+          "enum": ["HIGHLY_FRAGMENTED", "FRAGMENTED", "MODERATELY_CONCENTRATED", "CONCENTRATED", "HIGHLY_CONCENTRATED"]
+        },
+        "ourPosition": {
+          "type": "object",
+          "description": "Our position in the market",
+          "properties": {
+            "rank": {
+              "type": "integer",
+              "description": "Our rank among competitors",
+              "minimum": 1
+            },
+            "marketShare": {
+              "type": "number",
+              "description": "Our market share percentage",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "relativeBidStrength": {
+              "type": "number",
+              "description": "Our relative bid strength compared to competitors",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "winRate": {
+              "type": "number",
+              "description": "Our win rate in competitive auctions",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        }
+      }
+    },
+    "competitors": {
+      "type": "array",
+      "description": "List of analyzed competitors",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "biddingBehavior", "overallThreat"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for this competitor"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the competitor"
+          },
+          "category": {
+            "type": "string",
+            "description": "Business category of the competitor"
+          },
+          "biddingBehavior": {
+            "type": "object",
+            "description": "Analysis of the competitor's bidding behavior",
+            "properties": {
+              "averageBid": {
+                "type": "number",
+                "description": "Average bid amount",
+                "minimum": 0
+              },
+              "maxBid": {
+                "type": "number",
+                "description": "Maximum observed bid",
+                "minimum": 0
+              },
+              "bidFrequency": {
+                "type": "number",
+                "description": "Frequency of bids (bids per hour)",
+                "minimum": 0
+              },
+              "bidPattern": {
+                "type": "string",
+                "description": "Observed pattern in bidding behavior",
+                "enum": ["CONSISTENT", "PULSING", "TIME_SENSITIVE", "PRICE_SENSITIVE", "UNPREDICTABLE"]
+              },
+              "bidTrend": {
+                "type": "string",
+                "description": "Recent trend in bid amounts",
+                "enum": ["INCREASING", "DECREASING", "STABLE", "FLUCTUATING"]
+              },
+              "biddingHours": {
+                "type": "array",
+                "description": "Hours of the day when this competitor is most active (24-hour format)",
+                "items": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 23
+                }
+              },
+              "responeToOurBids": {
+                "type": "string",
+                "description": "How this competitor typically responds to our bids",
+                "enum": ["IGNORES", "MATCHES", "OUTBIDS", "RETREATS", "VARIES"]
+              }
+            }
+          },
+          "targetingOverlap": {
+            "type": "object",
+            "description": "Analysis of targeting overlap with our campaigns",
+            "properties": {
+              "overall": {
+                "type": "number",
+                "description": "Overall targeting overlap percentage",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "demographic": {
+                "type": "number",
+                "description": "Demographic targeting overlap percentage",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "geographic": {
+                "type": "number",
+                "description": "Geographic targeting overlap percentage",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "interests": {
+                "type": "number",
+                "description": "Interest targeting overlap percentage",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "keywords": {
+                "type": "number",
+                "description": "Keyword targeting overlap percentage",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "topOverlappingSegments": {
+                "type": "array",
+                "description": "Segments with the highest overlap",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "performance": {
+            "type": "object",
+            "description": "Performance metrics of the competitor",
+            "properties": {
+              "estimatedImpressionShare": {
+                "type": "number",
+                "description": "Estimated impression share percentage",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "estimatedClickShare": {
+                "type": "number",
+                "description": "Estimated click share percentage",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "estimatedConversionRate": {
+                "type": "number",
+                "description": "Estimated conversion rate",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "estimatedCTR": {
+                "type": "number",
+                "description": "Estimated click-through rate",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "qualityScore": {
+                "type": "number",
+                "description": "Estimated quality score (1-10)",
+                "minimum": 1,
+                "maximum": 10
+              }
+            }
+          },
+          "adCreativeAnalysis": {
+            "type": "object",
+            "description": "Analysis of the competitor's ad creatives",
+            "properties": {
+              "creativity": {
+                "type": "number",
+                "description": "Creativity score (1-10)",
+                "minimum": 1,
+                "maximum": 10
+              },
+              "messaging": {
+                "type": "array",
+                "description": "Key messages used in ads",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "sellingPoints": {
+                "type": "array",
+                "description": "Main selling points highlighted",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "callToAction": {
+                "type": "string",
+                "description": "Primary call to action used"
+              },
+              "refreshFrequency": {
+                "type": "string",
+                "description": "How frequently they refresh creatives",
+                "enum": ["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+              }
+            }
+          },
+          "budgetEstimation": {
+            "type": "object",
+            "description": "Estimation of the competitor's budget",
+            "properties": {
+              "dailySpend": {
+                "type": "number",
+                "description": "Estimated daily spend",
+                "minimum": 0
+              },
+              "monthlySpend": {
+                "type": "number",
+                "description": "Estimated monthly spend",
+                "minimum": 0
+              },
+              "spendTrend": {
+                "type": "string",
+                "description": "Trend in spending",
+                "enum": ["INCREASING", "DECREASING", "STABLE", "FLUCTUATING", "SEASONAL"]
+              },
+              "spendAggressiveness": {
+                "type": "string",
+                "description": "Aggressiveness of spending",
+                "enum": ["VERY_CONSERVATIVE", "CONSERVATIVE", "MODERATE", "AGGRESSIVE", "VERY_AGGRESSIVE"]
+              }
+            }
+          },
+          "overallThreat": {
+            "type": "object",
+            "description": "Overall competitive threat assessment",
+            "properties": {
+              "level": {
+                "type": "string",
+                "description": "Threat level",
+                "enum": ["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+              },
+              "score": {
+                "type": "number",
+                "description": "Threat score (0-100)",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "trend": {
+                "type": "string",
+                "description": "Trend in threat level",
+                "enum": ["INCREASING", "DECREASING", "STABLE"]
+              },
+              "mainStrengths": {
+                "type": "array",
+                "description": "Main competitive strengths",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "mainWeaknesses": {
+                "type": "array",
+                "description": "Main competitive weaknesses",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "recentChanges": {
+      "type": "array",
+      "description": "Recent significant changes in the competitive landscape",
+      "items": {
+        "type": "object",
+        "properties": {
+          "competitorId": {
+            "type": "string",
+            "description": "ID of the competitor"
+          },
+          "changeDate": {
+            "type": "string",
+            "description": "Date when the change was detected",
+            "format": "date-time"
+          },
+          "changeType": {
+            "type": "string",
+            "description": "Type of change",
+            "enum": ["NEW_COMPETITOR", "EXIT", "STRATEGY_SHIFT", "BUDGET_INCREASE", "BUDGET_DECREASE", "TARGETING_CHANGE", "CREATIVE_CHANGE"]
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the change"
+          },
+          "impact": {
+            "type": "string",
+            "description": "Impact on our competitive position",
+            "enum": ["NONE", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+          }
+        }
+      }
+    },
+    "recommendations": {
+      "type": "array",
+      "description": "Recommendations based on competitor analysis",
+      "items": {
+        "type": "object",
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "Target of the recommendation",
+            "enum": ["OVERALL", "SPECIFIC_COMPETITOR", "SPECIFIC_SEGMENT"]
+          },
+          "competitorId": {
+            "type": "string",
+            "description": "ID of the competitor if target is SPECIFIC_COMPETITOR"
+          },
+          "segment": {
+            "type": "string",
+            "description": "Segment if target is SPECIFIC_SEGMENT"
+          },
+          "action": {
+            "type": "string",
+            "description": "Recommended action",
+            "enum": ["INCREASE_BIDS", "DECREASE_BIDS", "CHANGE_TARGETING", "IMPROVE_CREATIVES", "ADJUST_SCHEDULE", "REALLOCATE_BUDGET", "HOLD_POSITION"]
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the recommendation"
+          },
+          "impact": {
+            "type": "string",
+            "description": "Potential impact of this recommendation",
+            "enum": ["LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+          },
+          "priority": {
+            "type": "string",
+            "description": "Priority of this recommendation",
+            "enum": ["LOW", "MEDIUM", "HIGH", "URGENT"]
+          }
+        }
+      }
+    },
+    "dataQuality": {
+      "type": "object",
+      "description": "Information about the quality of the analysis data",
+      "properties": {
+        "completeness": {
+          "type": "number",
+          "description": "Completeness of the data (0-1)",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "recency": {
+          "type": "string",
+          "description": "How recent the data is",
+          "enum": ["REAL_TIME", "TODAY", "THIS_WEEK", "THIS_MONTH", "OLDER"]
+        },
+        "confidence": {
+          "type": "number",
+          "description": "Overall confidence score for the analysis (0-1)",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "dataPoints": {
+          "type": "integer",
+          "description": "Number of data points used in the analysis",
+          "minimum": 0
+        }
+      }
+    }
+  }
+} 
