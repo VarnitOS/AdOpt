@@ -1,7 +1,7 @@
-<img width="1512" height="827" alt="Screenshot 2025-12-30 at 7 19 46 PM" src="https://github.com/user-attachments/assets/4f180c98-d0bc-4829-baf0-a0f40857a2ca" />
 # Ad Optimization Platform (AdOpt)
 
 A sophisticated real-time bidding (RTB) optimization platform that uses game theory principles to optimize advertising campaigns and maximize ROI.
+<img width="1512" height="827" alt="Screenshot 2025-12-30 at 7 19 46 PM" src="https://github.com/user-attachments/assets/4f180c98-d0bc-4829-baf0-a0f40857a2ca" />
 
 ## Project Structure
 
@@ -27,6 +27,9 @@ The frontend provides a dashboard for campaign management and optimization insig
 - **Game Theory Insights**: Get strategic insights based on game theory models
 
 ## Key Features
+
+<img width="1512" height="827" alt="Screenshot 2025-12-30 at 7 20 16 PM" src="https://github.com/user-attachments/assets/9c77e8fd-5275-4beb-857b-1e6da2482a3f" />
+<img width="1512" height="827" alt="Screenshot 2025-12-30 at 7 20 34 PM" src="https://github.com/user-attachments/assets/b16b5fc9-20b3-4d42-bd66-bd417d1c9ddb" />
 
 - **Game Theory-Based Optimization**: Uses Nash Equilibrium models to find optimal bidding strategies
 - **Competitor Analysis**: Tracks and analyzes competitor bidding patterns
