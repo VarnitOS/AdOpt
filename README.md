@@ -1,3 +1,4 @@
+<img width="1512" height="827" alt="Screenshot 2025-12-30 at 7 19 46 PM" src="https://github.com/user-attachments/assets/4f180c98-d0bc-4829-baf0-a0f40857a2ca" />
 # Ad Optimization Platform (AdOpt)
 
 A sophisticated real-time bidding (RTB) optimization platform that uses game theory principles to optimize advertising campaigns and maximize ROI.
